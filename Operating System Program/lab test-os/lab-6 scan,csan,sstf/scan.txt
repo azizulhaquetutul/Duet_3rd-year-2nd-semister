@@ -1,0 +1,46 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+int main() {
+    int head = 53;
+    vector<int> disk = {12, 34, 52, 14, 25, 68, 39};
+    int size = 90;
+    int sum = 0;
+
+    // Add head to the list and sort
+    disk.push_back(head);
+    sort(disk.begin(), disk.end());
+
+    // Find head position in sorted list
+    int pos = find(disk.begin(), disk.end(), head) - disk.begin();
+
+    cout << "The position of head:\n";
+    cout << head;
+
+    // Move right (towards higher cylinders)
+    for (int i = pos + 1; i < disk.size(); i++) {
+        cout << "->" << disk[i];
+        sum += abs(disk[i] - head);
+        head = disk[i];
+    }
+
+    // Go to end of disk (if not already there)
+    if (head != size) {
+        cout << "->" << size;
+        sum += abs(size - head);
+        head = size;
+    }
+
+    // Now reverse direction (left)
+    for (int i = pos - 1; i >= 0; i--) {
+        cout << "->" << disk[i];
+        sum += abs(disk[i] - head);
+        head = disk[i];
+    }
+
+    cout << "\nTotal head Movements (SCAN): " << sum << endl;
+    return 0;
+}
+

@@ -1,0 +1,135 @@
+//SJF Preemptive
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n = 3;
+    int at[n], bt[n], rt[n], wt[n] = {0}, ta[n] = {0};
+    int completed = 0, t = 0, shortest = -1, finish_time;
+    bool found;
+    cout << "Enter Arrival Time and Burst Time for each process:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << i + 1 << " -> ";
+        cout << "  Arrival Time: ";
+        cin >> at[i];
+        cout << "  Burst Time  : ";
+        cin >> bt[i];
+        rt[i] = bt[i]; // Initially remaining time = burst time
+    }
+
+    int WT = 0, TAT = 0;
+
+    while (completed != n) {
+        int minm = INT_MAX;
+        found = false;
+        for (int i = 0; i < n; i++) {
+            if (at[i] <= t && rt[i] > 0 && rt[i] < minm) {
+                shortest = i;
+                minm = rt[i];
+                found = true;
+            }
+        }
+        if (!found) {
+            t++;
+            continue;
+        }
+
+        rt[shortest]--;
+
+        if (rt[shortest] == 0) {
+            completed++;
+            finish_time = t + 1;
+            ta[shortest] = finish_time - at[shortest];
+            wt[shortest] = ta[shortest] - bt[shortest];
+            WT += wt[shortest];
+            TAT += ta[shortest];
+        }
+
+        t++;
+    }
+
+    cout << "\nProcess\tArrival\tBurst\tWaiting\tTurnaround";
+    for (int i = 0; i < n; i++)
+        cout << "\nP" << i + 1 << "\t" << at[i] << "\t" << bt[i] << "\t" << wt[i] << "\t" << ta[i];
+
+    cout << "\n\nAverage Waiting Time: " << fixed << setprecision(2) << (float)WT / n;
+    cout << "\nAverage Turnaround Time: " << fixed << setprecision(2) << (float)TAT / n << endl;
+
+    return 0;
+}
+
+//preemtive::
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Process {
+    int pid;      // Process ID
+    int at;       // Arrival Time
+    int bt;       // Burst Time
+    int wt;       // Waiting Time
+    int tat;      // Turnaround Time
+    bool done;    // Whether process is completed
+};
+
+int main() {
+    int n;
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    vector<Process> p(n);
+
+    // Input processes
+    for (int i = 0; i < n; i++) {
+        p[i].pid = i + 1;
+        cout << "Process P" << p[i].pid << ":\n";
+        cout << "  Arrival Time: ";
+        cin >> p[i].at;
+        cout << "  Burst Time  : ";
+        cin >> p[i].bt;
+        p[i].done = false;
+    }
+
+    int t = 0, completed = 0;
+    float totalWT = 0, totalTAT = 0;
+
+    while (completed < n) {
+        int idx = -1;
+        int minBT = INT_MAX;
+
+        for (int i = 0; i < n; i++) {
+            if (!p[i].done && p[i].at <= t && p[i].bt < minBT) {
+                minBT = p[i].bt;
+                idx = i;
+            }
+        }
+
+        if (idx != -1) {
+            // Process is found to run
+            p[idx].wt = t - p[idx].at;
+            t += p[idx].bt;
+            p[idx].tat = p[idx].wt + p[idx].bt;
+            p[idx].done = true;
+            completed++;
+
+            totalWT += p[idx].wt;
+            totalTAT += p[idx].tat;
+        } else {
+            // No process is ready to execute
+            t++;
+        }
+    }
+
+    // Print results
+    cout << "\nProcess\tArrival\tBurst\tWaiting\tTurnaround\n";
+    for (auto &proc : p) {
+        cout << "P" << proc.pid << "\t" << proc.at << "\t" << proc.bt
+             << "\t" << proc.wt << "\t" << proc.tat << "\n";
+    }
+
+    cout << fixed << setprecision(2);
+    cout << "\nAverage Waiting Time: " << totalWT / n;
+    cout << "\nAverage Turnaround Time: " << totalTAT / n << endl;
+
+    return 0;
+}

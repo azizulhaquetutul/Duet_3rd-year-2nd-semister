@@ -1,0 +1,122 @@
+
+//non-premtive
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+//easy to declare,code easy , each process data can combine
+
+struct Process {
+    int id;
+    int burst;
+    int priority;
+    int waiting;
+    int turnaround;
+};
+
+// Sort by priority (lower number = higher priority)
+bool compare(Process a, Process b) {
+    return a.priority < b.priority;
+}
+
+int main() {
+    Process p[] = {{1,5,2},{2,4,1},{3,1,3},{4,7,4},{5,6,3},{6,2,5}};
+    int n = 6;
+
+    // Sort processes by priority
+    sort(p, p+n, compare);
+
+    // Calculate waiting time and turnaround time
+    p[0].waiting = 0;
+    p[0].turnaround = p[0].burst;
+    for(int i=1; i<n; i++) {
+        p[i].waiting = p[i-1].waiting + p[i-1].burst;
+        p[i].turnaround = p[i].waiting + p[i].burst;
+    }
+
+    // Display table and calculate averages
+    float total_wait = 0, total_turn = 0;
+    cout << "Process\tBT\tPri\tWT\tTAT\n";
+    for(int i=0; i<n; i++) {
+        cout << "P" << p[i].id << "\t" << p[i].burst << "\t" << p[i].priority << "\t" << p[i].waiting << "\t" << p[i].turnaround << "\n";
+        total_wait += p[i].waiting;
+        total_turn += p[i].turnaround;
+    }
+
+    cout << "Average Waiting Time: " << total_wait/n << endl;
+    cout << "Average Turnaround Time: " << total_turn/n << endl;
+
+    return 0;
+}
+
+
+////non-preemtive
+
+
+#include <iostream>
+using namespace std;
+
+struct Process {
+    int id;
+    int burst;
+    int remaining;
+    int priority;
+    int waiting = 0;
+    int turnaround = 0;
+    int completed_time = 0;
+};
+
+int main() {
+    int n = 6;
+    Process p[] = {
+        {1, 5, 5, 2},
+        {2, 4, 4, 1},
+        {3, 1, 1, 3},
+        {4, 7, 7, 4},
+        {5, 6, 6, 3},
+        {6, 2, 2, 5}
+    };
+
+    int time = 0;
+    int completed = 0;
+
+    while (completed < n) {
+        int idx = -1;
+        int highest_priority = 1e9;
+
+        for (int i = 0; i < n; i++) {
+            if (p[i].remaining > 0 && p[i].priority < highest_priority) {
+                highest_priority = p[i].priority;
+                idx = i;
+            }
+        }
+
+        if (idx != -1) {
+            p[idx].remaining--;
+            if (p[idx].remaining == 0) {
+                completed++;
+                p[idx].completed_time = time + 1;
+                p[idx].turnaround = p[idx].completed_time;
+                p[idx].waiting = p[idx].turnaround - p[idx].burst;
+            }
+        }
+
+        time++;
+    }
+
+    // Display process table
+    float total_wait = 0, total_turn = 0;
+    cout << "\nProcess\tBT\tPri\tWT\tTAT\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << p[i].id << "\t" << p[i].burst << "\t" << p[i].priority << "\t" 
+             << p[i].waiting << "\t" << p[i].turnaround << "\n";
+        total_wait += p[i].waiting;
+        total_turn += p[i].turnaround;
+    }
+
+    cout << "\nAverage Waiting Time: " << total_wait / n << endl;
+    cout << "Average Turnaround Time: " << total_turn / n << endl;
+
+    return 0;
+}
+

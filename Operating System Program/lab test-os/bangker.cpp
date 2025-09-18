@@ -1,0 +1,51 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    int at[10], bt[10], rem[10], wt[10] = {}, tat[10] = {}, done = 0;
+    for (int i = 0; i < n; i++) {
+        cout << "Arrival & Burst time for P" << i + 1 << ": ";
+        cin >> at[i] >> bt[i];
+        rem[i] = bt[i];
+    }
+
+    int time = 0, last = -1;
+    while (done < n) {
+        int idx = -1, min_bt = 1e9;
+        for (int i = 0; i < n; i++) {
+            if (at[i] <= time && rem[i] > 0 && rem[i] < min_bt) {
+                min_bt = rem[i];
+                idx = i;
+            }
+        }
+
+        if (idx == -1) { time++; continue; }
+
+        rem[idx]--;
+        if (rem[idx] == 0) {
+            done++;
+            int finish = time + 1;
+            tat[idx] = finish - at[idx];
+            wt[idx] = tat[idx] - bt[idx];
+        }
+
+        time++;
+    }
+
+    float total_wt = 0, total_tat = 0;
+    cout << "\nProcess\tAT\tBT\tWT\tTAT\n";
+    for (int i = 0; i < n; i++) {
+        total_wt += wt[i];
+        total_tat += tat[i];
+        cout << "P" << i + 1 << "\t" << at[i] << "\t" << bt[i]
+             << "\t" << wt[i] << "\t" << tat[i] << "\n";
+    }
+
+    cout << "\nAvg Waiting Time: " << total_wt / n;
+    cout << "\nAvg Turnaround Time: " << total_tat / n << "\n";
+    return 0;
+}

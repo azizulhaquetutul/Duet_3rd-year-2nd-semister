@@ -1,0 +1,50 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct Process {
+    int id;
+    int burst;
+    int remaining;
+    int waiting;
+    int turnaround;
+};
+
+int main() {
+    int n = 3, quantum = 4;
+    Process p[] = {{1,24,24,0,0},{2,13,13,0,0},{3,9,9,0,0}};
+    queue<int> q;
+    int time = 0;
+
+    // Initially push all process indices
+    for (int i = 0; i < n; i++) q.push(i);
+
+    while (!q.empty()) {
+        int i = q.front(); q.pop();
+        int exec = min(quantum, p[i].remaining);
+        p[i].remaining -= exec;
+        time += exec;
+
+        // Check if finished
+        if (p[i].remaining > 0) {
+            q.push(i);
+        } else {
+            p[i].turnaround = time;
+            p[i].waiting = p[i].turnaround - p[i].burst;
+        }
+    }
+
+    // Display table and calculate averages
+    float total_wait = 0, total_turn = 0;
+    cout << "Process\tBT\tWT\tTAT\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << p[i].id << "\t" << p[i].burst << "\t" << p[i].waiting << "\t" << p[i].turnaround << "\n";
+        total_wait += p[i].waiting;
+        total_turn += p[i].turnaround;
+    }
+
+    cout << "Average Waiting Time: " << total_wait/n << endl;
+    cout << "Average Turnaround Time: " << total_turn/n << endl;
+
+    return 0;
+}

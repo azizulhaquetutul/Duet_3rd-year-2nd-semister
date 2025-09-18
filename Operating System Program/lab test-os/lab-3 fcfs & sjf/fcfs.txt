@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+int main() {
+
+    int n = 5;
+    vector<int> bt(n + 1), wt(n + 1), tat(n + 1);
+    int totalWT = 0, totalTAT = 0;
+
+    // Input burst times
+    cout << "Enter Process Burst Time\n";
+
+    for (int i = 1; i <= n; i++) {
+        cout << "\tP" << i << ": ";
+        cin >> bt[i];
+    }
+
+    // FCFS calculation
+    wt[1] = 0;
+
+    tat[1] = bt[1] + wt[1];
+
+    totalWT += wt[1];
+
+    totalTAT += tat[1];
+
+    for (int i = 2; i <= n; i++) {
+        wt[i]  = wt[i - 1] + bt[i - 1];
+        tat[i] = bt[i] + wt[i];
+        totalWT  += wt[i];
+        totalTAT += tat[i];
+    }
+
+    // Output per-process metrics
+    for (int i = 1; i <= n; i++) {
+        cout << "\nWaiting time for P" << i << " = "    << wt[i];
+
+        cout << "\nExecution Time for P" << i << " = " << bt[i];
+
+        cout << "\nTurnaround Time for P" << i << " = " << tat[i] << "\n";
+    }
+
+    // Totals and averages
+    cout << "\nTotal Waiting Time: "       << totalWT;
+
+    cout << "\nAverage Waiting Time: "     << (float)totalWT / n;
+
+    cout << "\nAverage Turnaround Time: "  << (float)totalTAT / n << endl;
+
+    return 0;
+}

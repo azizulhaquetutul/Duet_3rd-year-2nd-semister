@@ -1,0 +1,266 @@
+
+
+
+
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+
+
+using namespace std;
+
+// string
+vector<int> pageReferences = {
+    1,2,3,4,1,2,5,1,2,3,4,5
+};
+
+// fifo Page Replacement
+int fifoPageFaults(int frameCount) {
+    queue<int> frameQueue;
+    unordered_set<int> pagesInMemory;
+    int faults = 0;
+
+    for (int page : pageReferences) {
+        if (pagesInMemory.find(page) == pagesInMemory.end()) {
+            faults++;
+            if ((int)pagesInMemory.size() == frameCount) {
+                int oldestPage = frameQueue.front(); frameQueue.pop();
+                pagesInMemory.erase(oldestPage);
+            }
+            frameQueue.push(page);
+            pagesInMemory.insert(page);
+        }
+    }
+
+    return faults;
+}
+
+// lru Page Replacement
+int lruPageFaults(int frameCount) {
+    vector<int> memory;
+    int faults = 0;
+
+    for (int page : pageReferences) {
+        auto it = find(memory.begin(), memory.end(), page);
+
+        if (it == memory.end()) {
+            faults++;
+            if ((int)memory.size() == frameCount) {
+                memory.erase(memory.begin());
+            }
+        } else {
+            memory.erase(it);
+        }
+
+        memory.push_back(page);
+    }
+
+    return faults;
+}
+
+// Optimal Page Replacement
+int optimalPageFaults(int frameCount) {
+    vector<int> memory;
+    int faults = 0;
+
+    for (int i = 0; i < (int)pageReferences.size(); ++i) {
+        int currentPage = pageReferences[i];
+
+
+        if (find(memory.begin(), memory.end(), currentPage) != memory.end()) {
+            continue;
+        }
+
+        faults++;
+
+
+        if ((int)memory.size() < frameCount) {
+            memory.push_back(currentPage);
+            continue;
+        }
+
+
+        int indexToReplace = -1, farthestUse = -1;
+
+        for (int j = 0; j < (int)memory.size(); ++j) {
+            int nextUse = -1;
+
+            for (int k = i + 1; k < (int)pageReferences.size(); ++k) {
+                if (pageReferences[k] == memory[j]) {
+                    nextUse = k;
+                    break;
+                }
+            }
+
+            if (nextUse == -1) {
+                indexToReplace = j;
+                break;
+            } else if (nextUse > farthestUse) {
+                farthestUse = nextUse;
+                indexToReplace = j;
+            }
+        }
+
+        memory[indexToReplace] = currentPage;
+    }
+
+    return faults;
+}
+
+// Main program
+int main() {
+    cout << "Frame\tFIFO\tLRU\tOptimal\n";
+    for (int frames = 3; frames <= 7; ++frames) {
+        int fifoFaults = fifoPageFaults(frames);
+        int lruFaults = lruPageFaults(frames);
+        int optimalFaults = optimalPageFaults(frames);
+
+        cout << frames << "\t" << fifoFaults << "\t" << lruFaults << "\t" << optimalFaults << '\n';
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////
+#include <bits/stdc++.h>
+
+
+using namespace std;
+
+// string
+vector<int> pageReferences = {
+    1,2,3,4,1,2,5,1,2,3,4,5
+};
+
+// fifo Page Replacement
+int fifoPageFaults(int frameCount) {
+    queue<int> frameQueue;
+    unordered_set<int> pagesInMemory;
+    int faults = 0;
+
+    for (int page : pageReferences) {
+        if (pagesInMemory.find(page) == pagesInMemory.end()) {
+            faults++;
+            if ((int)pagesInMemory.size() == frameCount) {
+                int oldestPage = frameQueue.front(); frameQueue.pop();
+                pagesInMemory.erase(oldestPage);
+            }
+            frameQueue.push(page);
+            pagesInMemory.insert(page);
+        }
+    }
+
+    return faults;
+}
+
+// lru Page Replacement
+int lruPageFaults(int frameCount) {
+    vector<int> memory;
+    int faults = 0;
+
+    for (int page : pageReferences) {
+        auto it = find(memory.begin(), memory.end(), page);
+
+        if (it == memory.end()) {
+            faults++;
+            if ((int)memory.size() == frameCount) {
+                memory.erase(memory.begin());
+            }
+        } else {
+            memory.erase(it);
+        }
+
+        memory.push_back(page);
+    }
+
+    return faults;
+}
+
+// Optimal Page Replacement
+int optimalPageFaults(int frameCount) {
+    vector<int> memory;
+    int faults = 0;
+
+//Loop over each reference:
+
+    for (int i = 0; i < (int)pageReferences.size(); ++i) {
+        int currentPage = pageReferences[i];
+
+//If current page is already in memory, continue to next:
+
+        if (find(memory.begin(), memory.end(), currentPage) != memory.end()) {
+            continue;
+        }
+
+        faults++;
+//If memory has space, insert current page
+
+        if ((int)memory.size() < frameCount) {
+            memory.push_back(currentPage);
+            continue;
+        }
+
+//Find which page to replace:
+
+        int indexToReplace = -1, farthestUse = -1;
+
+        for (int j = 0; j < (int)memory.size(); ++j) {
+            int nextUse = -1;
+
+            for (int k = i + 1; k < (int)pageReferences.size(); ++k) {
+                if (pageReferences[k] == memory[j]) {
+                    nextUse = k;//// When will this page be used again?
+                    break;
+                }
+            }
+
+            if (nextUse == -1) { //// Not used again — best candidate
+                indexToReplace = j;
+                break;
+            } else if (nextUse > farthestUse) {
+                farthestUse = nextUse;
+                indexToReplace = j;
+            }
+        }
+
+        memory[indexToReplace] = currentPage;
+    }
+
+    return faults;
+}
+
+// Main program
+int main() {
+    cout << "Frame\tFIFO\tLRU\tOptimal\n";
+    for (int frames = 3; frames <= 7; ++frames) {
+        int fifoFaults = fifoPageFaults(frames);
+        int lruFaults = lruPageFaults(frames);
+        int optimalFaults = optimalPageFaults(frames);
+
+        cout << frames << "\t" << fifoFaults << "\t" << lruFaults << "\t" << optimalFaults << '\n';
+    }
+
+    return 0;
+}
+
