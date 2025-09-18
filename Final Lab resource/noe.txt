@@ -1,0 +1,116 @@
+In router R1 on order to reach toward the btcl lan-1 and lan-2 using the exit interface
+
+Backup the router configuration::
+
+in router R0,R1,R2,R3
+
+R1 er next hope holo R3 er ip 172.16.96.10
+
+R3 er btcl er ipv6 holo::
+
+lan-1 : 2001: db8:cafe:1::0/64
+lan-2;; 2001: db8:cafe:1::0/64
+
+////////////
+
+Basic Computer Network Configuration using IP Addressing (IPv4 and IPv6), Subnetting, Static Routing, Dynamic Routing (RIP and RIPng).
+
+Network Scenario:
+
+Suppose, BTCL is designing basic campus network LANs in DUET, BSMRAU, IUT, NU, DU and BUET. Moreover, BTCL itself has two networks namely BTCL LAN-1 & BTCL LAN-2 and maintains threes WANs named WAN-1, WAN-2 and WAN-3 to maintain interconnectivity between LANs.
+
+Consider that each of the LANs have 4000 users and WANs have only 2 interfaces. You are assigned as the Network Administrator of BTCL and have to configure the basic network configuration using the following instructions.
+
+IPv4 Configurations are needed for all the LANs. Additionally, BTCL LAN-1 and LAN-2 are also required IPv6 Configurations. Hence, BTCL LAN-1 and LAN-2 have both IPv4 and IPv6 configurations.
+
+Task1: IPv4 Address Allocation
+
+Using a given IPv4 IP: 172.16.0.0/16 the subnet allocation will be as follows:
+
+Subnet # 0: DUET
+
+Subnet # 1: BSMRAU
+
+Subnet # 2:
+
+IUT
+
+Subnet # 3:
+
+NU
+
+Subnet # 4:
+
+DU
+
+Subnet # 5:
+
+BUET
+
+Subnet # 6:
+
+BTCL LAN-1
+
+Subnet #7:
+
+BTCL LAN-2
+
+Subnet # 8: WAN (Use the 1st 3 sub-subnets for WAN-1, WAN-2 and WAN-3, respectively).
+
+IPv4 Configurations in PCs:
+
+In all LAN PCs, use either x.x.x.10 and/or x.x.x.20 IP address using the appropriate subnet address. Starting from DUET LAN sse a clock-wise IP assignment for all the PCs in the network and use x.x.x.10 in 1st PC of the LAN and then x.x.x.20 in the 2nd PC. If there is only single PC in a LAN in that case use x.x.x.10.
+
+Task2: IPv6 Address Allocation
+
+Global-Unicast Address:
+
+BTCL LAN-1:2001:db8:café:1::0\64
+
+BTCL LAN-2: 2001:db8:café:2::0\64
+
+Link-Local Address: BTCL LAN-1 and LAN-2: fe80::0
+
+IPv6 Configurations in PCs:
+
+In PCs of BTCL LAN-1 and LAN-2 use: 10 in the last Hextet of the appropriate IPv6 network address.
+
+Task3: Perform Router Configurations
+
+Configure the Routers of DUET & BSMRAU, IUT & NU, DU & BUET, BTCL LANS:
+
+1. Hostname of the Routers RO (DUET & BSMRAU), R1 (IUT & NU), R2 (DU & BUET) and R3 (BTCL).
+
+2. Give Secret Password "btel" for entering into Priviledged
+
+EXEC Mode.
+
+3. Assign the 1st usable IPv4 address in the Fast Ethernet Interfaces of the respective LANS.
+
+4. Assign 1st usable IPv4 address in the DCE Serial Interfaces and 2nd usable IP in the DTE Serial Interfaces of the respective WANS.
+
+5. Assign the Clock Rate 64000 in the DCE Serial Interfaces of the respective WANS.
+
+6. Assign the 1st usable IPv6 addresses (born Global-Unicast & Link-Local) in the Fast Ethernet Interfaces of BTCL LANS Router.
+
+Configure RIP Version 2 Routing Protocol
+
+1. In Routers RO, R1, R2 and R3.
+
+2. Configure the Passive Interfaces.
+
+Configure RIPng Routing Protocol
+
+1. In Router R3 to communicate between BTCL LAN-1 and LAN-2.
+
+2. Use the autonomous name as BTCL-AS.
+
+3. Enable IPv6 routing.
+
+Configure Static Routing
+
+1. In Router R1 in order to reach toward the BTCL LAN-1 and LAN-2 using the exit interface.
+
+Backup the Router Configurations
+1.In routers R0,R1,R2, and R3
+
